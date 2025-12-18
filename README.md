@@ -1,38 +1,49 @@
 # zhancore-crm-frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Frontend for Zhancore CRM built with Vue 3 and Vite. It includes admin and consultant dashboards, CRM entities (leads, opportunities, projects), and shared UI components.
 
-## Recommended IDE Setup
+## Requirements
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Node.js: see `package.json` engines
+- npm
 
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Getting started
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+Create a `.env.development` file (or reuse the existing one) with:
 
-```sh
-npm run dev
+```env
+VITE_API_BASE_URL=YOUR_API_BASE_URL
 ```
 
-### Compile and Minify for Production
+## Scripts
 
 ```sh
-npm run build
+npm run dev       # start dev server
+npm run build     # production build
+npm run preview   # preview production build
+npm run test      # Vitest in watch mode
+npm run test:run  # Vitest single run
 ```
+
+## Project structure
+
+```
+src/
+  api/            # API services (axios wrappers)
+  assets/         # static assets and base styles
+  components/     # UI and feature components
+  layouts/        # layout wrappers
+  router/         # Vue Router configuration
+  stores/         # Pinia stores (split by layers)
+  views/          # pages for admin/consultant
+```
+
+## Notes
+
+- API base URL is read from `VITE_API_BASE_URL`.
+- Routes are lazy-loaded in `src/router/index.js`.
+- Pinia store is split into `src/stores/crm/state.js` and `src/stores/crm/actions.js`.
