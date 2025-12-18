@@ -10,6 +10,7 @@ import AdminUsersView from '@/views/admin/UsersView.vue';
 import ConsultantMyLeads from '@/views/consultant/MyLeads.vue';
 import ConsultantOpportunities from '@/views/consultant/MyOpportunities.vue';
 import ConsultantProjects from '@/views/consultant/MyProjects.vue';
+import NotFoundView from '@/views/NotFoundView.vue';
 
 const Placeholder = { template: '<div class="text-gray-400">Page in development...</div>' };
 
@@ -43,7 +44,8 @@ const router = createRouter({
                 { path: 'projects', name: 'consultant-projects', component: ConsultantProjects },
             ]
         },
-        { path: '/', redirect: '/login' }
+        { path: '/', redirect: '/login' },
+        { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView }
     ]
 });
 
