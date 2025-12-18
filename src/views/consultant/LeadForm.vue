@@ -33,7 +33,9 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <AppSpinner v-if="isLoading" label="Loading lead..." />
+
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div v-if="isReadOnly" class="bg-amber-50 border border-amber-100 text-amber-700 text-sm p-3 rounded-lg">
           Lead is already qualified or closed. Details are read-only.
@@ -114,12 +116,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { useCrmStore } from '@/stores/crm';
 import AppInput from '@/components/ui/AppInput.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 
 const crmStore = useCrmStore();
 const route = useRoute();
 const router = useRouter();
 
 const lead = ref(null);
+const isLoading = ref(false);
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 
@@ -141,6 +145,7 @@ const formatDate = (value) => {
 const loadLead = async () => {
   const leadId = route.params.id;
   if (!leadId) return;
+  isLoading.value = true;
   try {
     lead.value = await crmStore.fetchLeadById(leadId);
     form.leadId = leadId;
@@ -151,6 +156,8 @@ const loadLead = async () => {
   } catch (error) {
     errorMessage.value = 'Failed to load lead details.';
     console.error(error);
+  } finally {
+    isLoading.value = false;
   }
 };
 

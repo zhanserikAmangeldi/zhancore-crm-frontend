@@ -29,7 +29,9 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <AppSpinner v-if="isLoading" label="Loading project..." />
+
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div class="flex flex-col gap-1.5">
           <label class="text-sm font-medium text-brand-dark/80">Opportunity</label>
@@ -136,12 +138,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { useCrmStore } from '@/stores/crm';
 import AppInput from '@/components/ui/AppInput.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 
 const crmStore = useCrmStore();
 const route = useRoute();
 const router = useRouter();
 
 const project = ref(null);
+const isLoading = ref(false);
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 
@@ -172,6 +176,7 @@ const toInputDateTime = (value) => {
 const loadProject = async () => {
   const projectId = route.params.id;
   if (!projectId) return;
+  isLoading.value = true;
   try {
     project.value = await crmStore.fetchProjectById(projectId);
     form.projectId = projectId;
@@ -185,6 +190,8 @@ const loadProject = async () => {
   } catch (error) {
     errorMessage.value = 'Failed to load project details.';
     console.error(error);
+  } finally {
+    isLoading.value = false;
   }
 };
 

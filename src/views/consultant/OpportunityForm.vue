@@ -29,7 +29,9 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <AppSpinner v-if="isLoading" label="Loading opportunity..." />
+
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div class="space-y-3">
           <h2 class="text-sm font-bold text-brand-indigo uppercase tracking-wider border-b border-gray-100 pb-2">
@@ -145,12 +147,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { useCrmStore } from '@/stores/crm';
 import AppInput from '@/components/ui/AppInput.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 
 const crmStore = useCrmStore();
 const route = useRoute();
 const router = useRouter();
 
 const opportunity = ref(null);
+const isLoading = ref(false);
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 
@@ -183,6 +187,7 @@ const toInputDateTime = (value) => {
 const loadOpportunity = async () => {
   const opportunityId = route.params.id;
   if (!opportunityId) return;
+  isLoading.value = true;
   try {
     opportunity.value = await crmStore.fetchOpportunityById(opportunityId);
     form.opportunityId = opportunityId;
@@ -195,6 +200,8 @@ const loadOpportunity = async () => {
   } catch (error) {
     errorMessage.value = 'Failed to load opportunity details.';
     console.error(error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
