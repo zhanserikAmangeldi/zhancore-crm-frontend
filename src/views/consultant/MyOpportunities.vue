@@ -3,8 +3,10 @@
     <div class="flex justify-between items-end">
     </div>
 
+    <AppSpinner v-if="crmStore.isLoading" label="Loading opportunities..." />
+
     <!-- Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <table class="w-full text-left border-collapse">
         <thead class="bg-brand-indigo/5 text-xs uppercase text-brand-indigo font-semibold">
         <tr>
@@ -12,7 +14,7 @@
           <th class="px-6 py-4">Client</th>
           <th class="px-6 py-4">Budget</th>
           <th class="px-6 py-4">Status</th>
-          <th class="px-6 py-4 text-right">Action</th>
+          <th class="px-10 py-4 text-right">Action</th>
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -52,6 +54,7 @@
 import { onMounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 
 const crmStore = useCrmStore();
 
