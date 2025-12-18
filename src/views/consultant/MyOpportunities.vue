@@ -11,7 +11,8 @@
           <th class="px-6 py-4">Name</th>
           <th class="px-6 py-4">Client</th>
           <th class="px-6 py-4">Budget</th>
-          <th class="px-10 py-4 text-right">Action</th>
+          <th class="px-6 py-4">Status</th>
+          <th class="px-6 py-4 text-right">Action</th>
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -24,6 +25,9 @@
           </td>
           <td class="px-6 py-4 text-gray-800 font-medium">
             {{ opp.price ? opp.price.toLocaleString() + ' ₸' : '-' }}
+          </td>
+          <td class="px-6 py-4">
+            <StatusBadge :status="opp.status" />
           </td>
           <td class="px-6 py-4 text-right">
             <router-link
@@ -47,6 +51,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
+import StatusBadge from '@/components/ui/StatusBadge.vue';
 
 const crmStore = useCrmStore();
 
