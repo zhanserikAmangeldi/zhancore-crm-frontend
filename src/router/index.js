@@ -1,21 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
-import MainLayout from '@/layouts/MainLayout.vue';
+const MainLayout = () => import('@/layouts/MainLayout.vue');
 
-import LoginView from '@/views/LoginView.vue';
-import AdminLeadsView from '@/views/admin/LeadsView.vue';
-import AdminClientsView from '@/views/admin/ClientsView.vue';
-import AdminUsersView from '@/views/admin/UsersView.vue';
-import AdminOpportunitiesView from '@/views/admin/OpportunitiesView.vue';
-import AdminProjectsView from '@/views/admin/ProjectsView.vue';
-import ConsultantMyLeads from '@/views/consultant/MyLeads.vue';
-import ConsultantOpportunities from '@/views/consultant/MyOpportunities.vue';
-import ConsultantProjects from '@/views/consultant/MyProjects.vue';
-import ConsultantLeadForm from '@/views/consultant/LeadForm.vue';
-import ConsultantOpportunityForm from '@/views/consultant/OpportunityForm.vue';
-import ConsultantProjectForm from '@/views/consultant/ProjectForm.vue';
-import NotFoundView from '@/views/NotFoundView.vue';
+const LoginView = () => import('@/views/LoginView.vue');
+const AdminLeadsView = () => import('@/views/admin/LeadsView.vue');
+const AdminClientsView = () => import('@/views/admin/ClientsView.vue');
+const AdminUsersView = () => import('@/views/admin/UsersView.vue');
+const AdminOpportunitiesView = () => import('@/views/admin/OpportunitiesView.vue');
+const AdminProjectsView = () => import('@/views/admin/ProjectsView.vue');
+const ConsultantMyLeads = () => import('@/views/consultant/MyLeads.vue');
+const ConsultantOpportunities = () => import('@/views/consultant/MyOpportunities.vue');
+const ConsultantProjects = () => import('@/views/consultant/MyProjects.vue');
+const ConsultantLeadForm = () => import('@/views/consultant/LeadForm.vue');
+const ConsultantOpportunityForm = () => import('@/views/consultant/OpportunityForm.vue');
+const ConsultantProjectForm = () => import('@/views/consultant/ProjectForm.vue');
+const NotFoundView = () => import('@/views/NotFoundView.vue');
 
 const Placeholder = { template: '<div class="text-gray-400">Page in development...</div>' };
 
