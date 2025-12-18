@@ -51,7 +51,7 @@
             </button>
             <button
                 v-else
-                class="text-sm text-gray-400 hover:text-brand-dark px-3 py-1.5"
+                class="text-sm text-gray-400 hover:text-brand-dark pl-3 py-1.5"
             >
               Details
             </button>
