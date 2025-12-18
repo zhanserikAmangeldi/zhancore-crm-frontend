@@ -64,7 +64,9 @@ const navItems = computed(() => {
     return [
       { name: 'Leads', path: '/admin/leads' },
       { name: 'Clients', path: '/admin/clients'},
-      { name: 'Users', path: '/admin/users'}
+      { name: 'Opportunities', path: '/admin/opportunities' },
+      { name: 'Projects', path: '/admin/projects' },
+      { name: 'Users', path: '/admin/users' }
     ];
   } else {
     return [

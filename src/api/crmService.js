@@ -62,6 +62,11 @@ export const getMyOpportunities = async () => {
   return data;
 };
 
+export const getAllOpportunities = async () => {
+  const { data } = await api.get('/opportunity/all');
+  return data;
+};
+
 export const getOpportunityById = async (opportunityId) => {
   const { data } = await api.get(`/opportunity/${opportunityId}`);
   return data;
@@ -77,6 +82,11 @@ export const qualifyOpportunityRequest = async (payload) => {
 
 export const getMyProjects = async () => {
   const { data } = await api.get('/project/my-projects');
+  return data;
+};
+
+export const getAllProjects = async () => {
+  const { data } = await api.get('/project/all');
   return data;
 };
 

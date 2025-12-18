@@ -7,8 +7,10 @@ import {
     getLeads,
     getLeadById,
     getMyLeads,
+    getAllOpportunities,
     getMyOpportunities,
     getMyProjects,
+    getAllProjects,
     getOpportunityById,
     getProjectById,
     getUsers,
@@ -206,6 +208,18 @@ export const useCrmStore = defineStore('crm', () => {
         }
     }
 
+    async function fetchAllOpportunities() {
+        isLoading.value = true;
+        try {
+            opportunities.value = await getAllOpportunities();
+        } catch (err) {
+            error.value = 'Failed to load opportunities';
+            console.error(err);
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
     async function fetchOpportunityById(opportunityId) {
         try {
             return await getOpportunityById(opportunityId);
@@ -260,6 +274,18 @@ export const useCrmStore = defineStore('crm', () => {
         }
     }
 
+    async function fetchAllProjects() {
+        isLoading.value = true;
+        try {
+            projects.value = await getAllProjects();
+        } catch (err) {
+            error.value = 'Failed to load projects';
+            console.error(err);
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
     async function fetchProjectById(projectId) {
         try {
             return await getProjectById(projectId);
@@ -308,10 +334,12 @@ export const useCrmStore = defineStore('crm', () => {
         addLeadDetails,
         qualifyLead,
         fetchMyOpportunities,
+        fetchAllOpportunities,
         fetchOpportunityById,
         addOpportunityDetails,
         qualifyOpportunity,
         fetchMyProjects,
+        fetchAllProjects,
         fetchProjectById,
         updateProjectDetails
     }; 

@@ -31,10 +31,6 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <form @submit.prevent="handleSubmit" class="space-y-6">
-        <div v-if="isReadOnly" class="bg-amber-50 border border-amber-100 text-amber-700 text-sm p-3 rounded-lg">
-          Opportunity is already closed. Details are read-only.
-        </div>
-
         <div class="space-y-3">
           <h2 class="text-sm font-bold text-brand-indigo uppercase tracking-wider border-b border-gray-100 pb-2">
             Opportunity Details
@@ -44,14 +40,12 @@
               v-model="form.name"
               label="Project name"
               placeholder="Integrate CRM..."
-              :disabled="isReadOnly"
               required
             />
             <AppInput
               v-model.number="form.price"
               label="Final Budget (KZT)"
               type="number"
-              :disabled="isReadOnly"
               required
             />
           </div>
@@ -61,14 +55,12 @@
               v-model="form.startDate"
               label="Date of Start"
               type="datetime-local"
-              :disabled="isReadOnly"
               required
             />
             <AppInput
               v-model="form.endDate"
               label="Date of End"
               type="datetime-local"
-              :disabled="isReadOnly"
               required
             />
           </div>
@@ -78,7 +70,6 @@
             <textarea
               v-model="form.workScope"
               rows="4"
-              :disabled="isReadOnly"
               class="px-4 py-2.5 rounded-lg border border-gray-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all text-brand-dark w-full resize-none"
               placeholder="Describe scope, stages, and deliverables."
               required
@@ -92,7 +83,6 @@
               v-model.number="form.probability"
               min="0"
               max="100"
-              :disabled="isReadOnly"
               class="w-full accent-brand-teal cursor-pointer"
             />
             <div class="text-right text-sm font-bold text-brand-teal">{{ form.probability }}%</div>
@@ -107,7 +97,6 @@
             <input
               type="checkbox"
               v-model="form.isSupportIncluded"
-              :disabled="isReadOnly"
               class="h-4 w-4 rounded border-gray-300 text-brand-teal focus:ring-brand-teal"
             />
             Include support in the project
@@ -125,9 +114,9 @@
           >
             Cancel
           </router-link>
-          <AppButton :type="'submit'" :disabled="isSubmitting || isReadOnly">
+          <AppButton :type="'submit'" :disabled="isSubmitting">
             <span v-if="isSubmitting">Saving...</span>
-            <span v-else>{{ isReadOnly ? 'Read Only' : 'Create Project' }}</span>
+            <span v-else>{{ canQualify ? 'Create Project' : 'Save Changes' }}</span>
           </AppButton>
         </div>
       </form>
@@ -161,7 +150,7 @@ const form = reactive({
   isSupportIncluded: false
 });
 
-const isReadOnly = computed(() => opportunity.value && opportunity.value.status !== 'New');
+const canQualify = computed(() => !opportunity.value || opportunity.value.status === 'New');
 
 const formatDate = (value) => {
   if (!value) return '-';
@@ -195,10 +184,6 @@ const loadOpportunity = async () => {
 };
 
 const handleSubmit = async () => {
-  if (isReadOnly.value) {
-    router.push('/consultant/opportunities');
-    return;
-  }
   isSubmitting.value = true;
   errorMessage.value = '';
   try {
@@ -208,10 +193,12 @@ const handleSubmit = async () => {
       endDate: form.endDate ? new Date(form.endDate).toISOString() : null
     };
     await crmStore.addOpportunityDetails(detailsPayload);
-    await crmStore.qualifyOpportunity({
-      opportunityId: detailsPayload.opportunityId,
-      isSupportIncluded: detailsPayload.isSupportIncluded
-    });
+    if (canQualify.value) {
+      await crmStore.qualifyOpportunity({
+        opportunityId: detailsPayload.opportunityId,
+        isSupportIncluded: detailsPayload.isSupportIncluded
+      });
+    }
     router.push('/consultant/opportunities');
   } catch (error) {
     errorMessage.value = 'Failed to create project, check the data.';

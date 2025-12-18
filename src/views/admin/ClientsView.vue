@@ -12,8 +12,10 @@
       </div>
     </div>
 
+    <AppSpinner v-if="crmStore.isLoading" label="Loading clients..." />
+
     <!-- Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <table class="w-full text-left border-collapse">
         <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-semibold">
         <tr>
@@ -49,6 +51,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 
 const crmStore = useCrmStore();
 

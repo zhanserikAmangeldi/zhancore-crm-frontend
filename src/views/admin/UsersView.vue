@@ -28,8 +28,10 @@
       </form>
     </AppModal>
 
+    <AppSpinner v-if="crmStore.isLoading" label="Loading users..." />
+
     <!-- Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <table class="w-full text-left border-collapse table-auto">
         <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-semibold">
         <tr>
@@ -86,6 +88,7 @@ import AppModal from '@/components/ui/AppModal.vue';
 import AppInput from '@/components/ui/AppInput.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import UserDetailsForm from '@/components/admin/UserDetailsForm.vue';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 
 const crmStore = useCrmStore();
 const isModalOpen = ref(false);

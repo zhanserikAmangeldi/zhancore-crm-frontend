@@ -7,6 +7,8 @@ import LoginView from '@/views/LoginView.vue';
 import AdminLeadsView from '@/views/admin/LeadsView.vue';
 import AdminClientsView from '@/views/admin/ClientsView.vue';
 import AdminUsersView from '@/views/admin/UsersView.vue';
+import AdminOpportunitiesView from '@/views/admin/OpportunitiesView.vue';
+import AdminProjectsView from '@/views/admin/ProjectsView.vue';
 import ConsultantMyLeads from '@/views/consultant/MyLeads.vue';
 import ConsultantOpportunities from '@/views/consultant/MyOpportunities.vue';
 import ConsultantProjects from '@/views/consultant/MyProjects.vue';
@@ -33,6 +35,8 @@ const router = createRouter({
                 { path: '', redirect: '/admin/leads' },
                 { path: 'leads', name: 'admin-leads', component: AdminLeadsView },
                 { path: 'clients', name: 'admin-clients', component: AdminClientsView },
+                { path: 'opportunities', name: 'admin-opportunities', component: AdminOpportunitiesView },
+                { path: 'projects', name: 'admin-projects', component: AdminProjectsView },
                 { path: 'users', name: 'admin-users', component: AdminUsersView },
             ]
         },

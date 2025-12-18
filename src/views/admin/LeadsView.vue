@@ -11,8 +11,10 @@
       </div>
     </div>
 
+    <AppSpinner v-if="crmStore.isLoading" label="Loading leads..." />
+
     <!-- Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <table class="w-full text-left border-collapse">
         <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-semibold">
         <tr>
@@ -110,6 +112,7 @@ import { ref, onMounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import AppModal from '@/components/ui/AppModal.vue';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 
 const crmStore = useCrmStore();
 
