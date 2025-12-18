@@ -44,6 +44,11 @@ export const getMyLeads = async () => {
   return data;
 };
 
+export const getLeadById = async (leadId) => {
+  const { data } = await api.get(`/lead/${leadId}`);
+  return data;
+};
+
 export const updateLead = async (payload) => {
   await api.put('/lead/update', payload);
 };
@@ -54,6 +59,11 @@ export const qualifyLeadRequest = async (leadId) => {
 
 export const getMyOpportunities = async () => {
   const { data } = await api.get('/opportunity/my-opportunities');
+  return data;
+};
+
+export const getOpportunityById = async (opportunityId) => {
+  const { data } = await api.get(`/opportunity/${opportunityId}`);
   return data;
 };
 
@@ -68,4 +78,13 @@ export const qualifyOpportunityRequest = async (payload) => {
 export const getMyProjects = async () => {
   const { data } = await api.get('/project/my-projects');
   return data;
+};
+
+export const getProjectById = async (projectId) => {
+  const { data } = await api.get(`/project/${projectId}`);
+  return data;
+};
+
+export const updateProject = async (payload) => {
+  await api.put('/project/update', payload);
 };

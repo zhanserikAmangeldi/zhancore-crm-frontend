@@ -9,7 +9,8 @@
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         :placeholder="placeholder"
-        class="px-4 py-2.5 rounded-lg border border-gray-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all duration-200 text-brand-dark bg-white"
+        :disabled="disabled"
+        class="px-4 py-2.5 rounded-lg border border-gray-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all duration-200 text-brand-dark bg-white disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed"
     />
   </div>
 </template>
@@ -20,7 +21,8 @@ defineProps({
   label: String,
   type: { type: String, default: 'text' },
   placeholder: String,
-  id: { type: String, default: () => `input-${Math.random().toString(36).substr(2, 9)}` }
+  id: { type: String, default: () => `input-${Math.random().toString(36).substr(2, 9)}` },
+  disabled: { type: Boolean, default: false }
 })
 defineEmits(['update:modelValue'])
 </script>

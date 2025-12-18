@@ -5,9 +5,12 @@ import {
     getClients,
     getConsultants,
     getLeads,
+    getLeadById,
     getMyLeads,
     getMyOpportunities,
     getMyProjects,
+    getOpportunityById,
+    getProjectById,
     getUsers,
     createUser as createUserRequest,
     changeUserPassword as changeUserPasswordRequest,
@@ -15,7 +18,8 @@ import {
     qualifyLeadRequest,
     qualifyOpportunityRequest,
     updateLead,
-    updateOpportunity
+    updateOpportunity,
+    updateProject
 } from '@/api/crmService';
 
 export const useCrmStore = defineStore('crm', () => {
@@ -146,6 +150,15 @@ export const useCrmStore = defineStore('crm', () => {
         }
     }
 
+    async function fetchLeadById(leadId) {
+        try {
+            return await getLeadById(leadId);
+        } catch (err) {
+            error.value = 'Failed to load lead details';
+            throw err;
+        }
+    }
+
     async function addLeadDetails(payload) {
         isLoading.value = true;
         try {
@@ -190,6 +203,15 @@ export const useCrmStore = defineStore('crm', () => {
             console.error(err);
         } finally {
             isLoading.value = false;
+        }
+    }
+
+    async function fetchOpportunityById(opportunityId) {
+        try {
+            return await getOpportunityById(opportunityId);
+        } catch (err) {
+            error.value = 'Failed to load opportunity details';
+            throw err;
         }
     }
 
@@ -238,6 +260,32 @@ export const useCrmStore = defineStore('crm', () => {
         }
     }
 
+    async function fetchProjectById(projectId) {
+        try {
+            return await getProjectById(projectId);
+        } catch (err) {
+            error.value = 'Failed to load project details';
+            throw err;
+        }
+    }
+
+    async function updateProjectDetails(payload) {
+        isLoading.value = true;
+        try {
+            await updateProject(payload);
+            const project = projects.value.find(p => p.id === payload.projectId);
+            if (project) {
+                Object.assign(project, payload);
+            }
+            return true;
+        } catch (err) {
+            error.value = 'Failed to save project details';
+            throw err;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
     return {
         consultants,
         leads,
@@ -256,11 +304,15 @@ export const useCrmStore = defineStore('crm', () => {
         changeUserPassword,
         assignLead,
         fetchMyLeads,
+        fetchLeadById,
         addLeadDetails,
         qualifyLead,
         fetchMyOpportunities,
+        fetchOpportunityById,
         addOpportunityDetails,
         qualifyOpportunity,
-        fetchMyProjects
+        fetchMyProjects,
+        fetchProjectById,
+        updateProjectDetails
     }; 
 });

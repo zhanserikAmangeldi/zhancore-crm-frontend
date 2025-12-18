@@ -10,6 +10,9 @@ import AdminUsersView from '@/views/admin/UsersView.vue';
 import ConsultantMyLeads from '@/views/consultant/MyLeads.vue';
 import ConsultantOpportunities from '@/views/consultant/MyOpportunities.vue';
 import ConsultantProjects from '@/views/consultant/MyProjects.vue';
+import ConsultantLeadForm from '@/views/consultant/LeadForm.vue';
+import ConsultantOpportunityForm from '@/views/consultant/OpportunityForm.vue';
+import ConsultantProjectForm from '@/views/consultant/ProjectForm.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 
 const Placeholder = { template: '<div class="text-gray-400">Page in development...</div>' };
@@ -40,8 +43,11 @@ const router = createRouter({
             children: [
                 { path: '', redirect: '/consultant/leads' },
                 { path: 'leads', name: 'consultant-leads', component: ConsultantMyLeads },
+                { path: 'leads/:id', name: 'consultant-lead-form', component: ConsultantLeadForm },
                 { path: 'opportunities', name: 'consultant-opportunities', component: ConsultantOpportunities },
+                { path: 'opportunities/:id', name: 'consultant-opportunity-form', component: ConsultantOpportunityForm },
                 { path: 'projects', name: 'consultant-projects', component: ConsultantProjects },
+                { path: 'projects/:id', name: 'consultant-project-form', component: ConsultantProjectForm },
             ]
         },
         { path: '/', redirect: '/login' },
