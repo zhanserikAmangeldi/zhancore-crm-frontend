@@ -1,6 +1,19 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import api from '@/api';
+import {
+    assignLeadOwner,
+    getClients,
+    getConsultants,
+    getLeads,
+    getMyLeads,
+    getMyOpportunities,
+    getMyProjects,
+    getUsers,
+    qualifyLeadRequest,
+    qualifyOpportunityRequest,
+    updateLead,
+    updateOpportunity
+} from '@/api/crmService';
 
 export const useCrmStore = defineStore('crm', () => {
     const consultants = ref([]);
@@ -15,8 +28,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function fetchLeads() {
         isLoading.value = true;
         try {
-            const { data } = await api.get('/api/lead/all');
-            leads.value = data;
+            leads.value = await getLeads();
         } catch (err) {
             error.value = 'Failed to load leads';
             console.error(err);
@@ -27,9 +39,7 @@ export const useCrmStore = defineStore('crm', () => {
 
     async function fetchConsultants() {
         try {
-            const { data } = await api.get('/api/admin/users');
-            console.log(data);
-            consultants.value = data;
+            consultants.value = await getConsultants();
         } catch (err) {
             console.error('Failed to load consultants', err);
         }
@@ -37,9 +47,7 @@ export const useCrmStore = defineStore('crm', () => {
 
     async function fetchClients() {
         try {
-            const { data } = await api.get('/api/client/all');
-            console.log(data);
-            clients.value = data;
+            clients.value = await getClients();
         } catch (err) {
             console.error('Failed to load consultants', err);
         }
@@ -47,9 +55,7 @@ export const useCrmStore = defineStore('crm', () => {
 
     async function fetchUsers() {
         try {
-            const { data } = await api.get('/api/admin/users');
-            console.log(data);
-            users.value = data;
+            users.value = await getUsers();
         } catch (err) {
             console.error('Failed to load users', err);
         }
@@ -58,7 +64,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function assignLead(payload) {
         isLoading.value = true;
         try {
-            await api.post('/api/lead/assign-owner', payload);
+            await assignLeadOwner(payload);
 
             const lead = leads.value.find(l => l.id === payload.entityId);
             if (lead) {
@@ -79,8 +85,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function fetchMyLeads() {
         isLoading.value = true;
         try {
-            const { data } = await api.get('/api/lead/my-leads');
-            leads.value = data;
+            leads.value = await getMyLeads();
         } catch (err) {
             error.value = 'Failed to load your leads';
             console.error(err);
@@ -92,7 +97,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function addLeadDetails(payload) {
         isLoading.value = true;
         try {
-            await api.put('/api/lead/update', payload);
+            await updateLead(payload);
 
             const lead = leads.value.find(l => l.id === payload.leadId);
 
@@ -108,7 +113,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function qualifyLead(leadId) {
         isLoading.value = true;
         try {
-            await api.post(`/api/lead/qualify/${leadId}`);
+            await qualifyLeadRequest(leadId);
 
             const lead = leads.value.find(l => l.id === leadId);
             if (lead) {
@@ -127,8 +132,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function fetchMyOpportunities() {
         isLoading.value = true;
         try {
-            const { data } = await api.get('/api/opportunity/my-opportunities');
-            opportunities.value = data;
+            opportunities.value = await getMyOpportunities();
         } catch (err) {
             error.value = 'Failed to load your opportunities';
             console.error(err);
@@ -140,7 +144,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function addOpportunityDetails(payload) {
         isLoading.value = true;
         try {
-            await api.put('/api/opportunity/update', payload);
+            await updateOpportunity(payload);
 
             return true;
         } catch (err) {
@@ -154,7 +158,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function qualifyOpportunity(payload) {
         isLoading.value = true;
         try {
-            await api.post('/api/opportunity/qualify-to-project', payload);
+            await qualifyOpportunityRequest(payload);
 
             const oppIndex = opportunities.value.findIndex(o => o.id === payload.opportunityId);
             if (oppIndex !== -1) {
@@ -173,8 +177,7 @@ export const useCrmStore = defineStore('crm', () => {
     async function fetchMyProjects() {
         isLoading.value = true;
         try {
-            const { data } = await api.get('/api/project/my-projects');
-            projects.value = data;
+            projects.value = await getMyProjects();
         } catch (err) {
             error.value = 'Failed to load your projects';
             console.error(err);

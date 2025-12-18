@@ -43,7 +43,7 @@ import { useAuthStore } from '@/stores/auth';
 import AppInput from '@/components/ui/AppInput.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppLogo from '@/components/ui/AppLogo.vue';
-import axios from "axios";
+import { login } from '@/api/authService';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -60,8 +60,7 @@ const handleLogin = async () => {
   errorMessage.value = '';
 
   try {
-    const response = await axios.post(`/api/auth/login`, form);
-    const { token, role } = response.data;
+    const { token, role } = await login(form);
 
     authStore.login(token, role);
     console.log(token, role);
@@ -74,7 +73,7 @@ const handleLogin = async () => {
       await router.push('/consultant');
     }
   } catch (error) {
-    errorMessage.value = error;
+    errorMessage.value = error?.response?.data?.message || 'Login failed. Please try again.';
   } finally {
     isLoading.value = false;
   }
