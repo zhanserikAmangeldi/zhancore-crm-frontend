@@ -5,9 +5,28 @@
           @click="isModalOpen = true"
           class="bg-brand-teal text-white px-4 py-2 rounded-lg hover:bg-brand-teal/90 flex items-center gap-2 transition-colors shadow-md"
       >
-        <span>+</span> Add Consultant
+        <span>+</span> Add User
       </button>
     </div>
+
+    <AppModal :isOpen="isModalOpen" title="Create User" @close="isModalOpen = false">
+      <form @submit.prevent="handleCreateUser" class="space-y-4">
+        <AppInput v-model="form.username" label="Username" placeholder="johndoe" />
+        <AppInput v-model="form.password" label="Password" type="password" placeholder="at least 6 characters" />
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-brand-dark/80">Role</label>
+          <select v-model="form.role" class="px-4 py-2.5 rounded-lg border border-gray-200 focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 outline-none transition-all duration-200 bg-white">
+            <option value="Consultant">Consultant</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <AppButton variant="secondary" type="button" @click="isModalOpen = false">Cancel</AppButton>
+          <AppButton :type="'submit'">Create</AppButton>
+        </div>
+      </form>
+    </AppModal>
 
     <!-- Table -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -45,6 +64,9 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
+import AppModal from '@/components/ui/AppModal.vue';
+import AppInput from '@/components/ui/AppInput.vue';
+import AppButton from '@/components/ui/AppButton.vue';
 
 const crmStore = useCrmStore();
 const isModalOpen = ref(false);
@@ -60,16 +82,26 @@ onMounted(() => {
   crmStore.fetchUsers();
 });
 
-const handleCreateUser = async () => { // TODO: add opportunity to create users
+const handleCreateUser = async () => {
+  if (!form.username || !form.password) {
+    alert('Please fill username and password');
+    return;
+  }
+  if (form.password.length < 6) {
+    alert('Password must be at least 6 characters');
+    return;
+  }
+
   try {
-    await crmStore.createUser({ ...form });
+    await crmStore.createUser({ username: form.username, password: form.password, roleName: form.role });
     isModalOpen.value = false;
 
     form.name = '';
     form.username = '';
     form.password = '';
+    form.role = 'Consultant';
   } catch (e) {
-    alert('failed to create user');
+    alert('Failed to create user');
   }
 };
 </script>

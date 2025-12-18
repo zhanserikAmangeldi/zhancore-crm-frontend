@@ -9,6 +9,7 @@ import {
     getMyOpportunities,
     getMyProjects,
     getUsers,
+    createUser as createUserRequest,
     qualifyLeadRequest,
     qualifyOpportunityRequest,
     updateLead,
@@ -58,6 +59,26 @@ export const useCrmStore = defineStore('crm', () => {
             users.value = await getUsers();
         } catch (err) {
             console.error('Failed to load users', err);
+        }
+    }
+
+    async function createUser(payload) {
+        isLoading.value = true;
+        try {
+            const created = await createUserRequest(payload);
+            // If API returns the created user object, append it locally; otherwise refetch
+            if (created && created.id) {
+                users.value.push(created);
+            } else {
+                await fetchUsers();
+            }
+            return created;
+        } catch (err) {
+            error.value = 'Failed to create user';
+            console.error(err);
+            throw err;
+        } finally {
+            isLoading.value = false;
         }
     }
 
@@ -199,6 +220,7 @@ export const useCrmStore = defineStore('crm', () => {
         fetchConsultants,
         fetchClients,
         fetchUsers,
+        createUser,
         assignLead,
         fetchMyLeads,
         addLeadDetails,
@@ -207,5 +229,5 @@ export const useCrmStore = defineStore('crm', () => {
         addOpportunityDetails,
         qualifyOpportunity,
         fetchMyProjects
-    };
+    }; 
 });

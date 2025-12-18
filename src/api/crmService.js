@@ -20,6 +20,11 @@ export const getUsers = async () => {
   return data;
 };
 
+export const createUser = async (payload) => {
+  const { data } = await api.post('/admin/users/create', payload);
+  return data;
+};
+
 export const assignLeadOwner = async (payload) => {
   await api.post('/lead/assign-owner', payload);
 };
