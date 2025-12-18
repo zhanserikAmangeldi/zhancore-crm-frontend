@@ -36,6 +36,7 @@
           <th class="px-2 py-4">ID</th>
           <th class="px-6 py-4">Username</th>
           <th class="px-6 py-4">Role</th>
+          <th class="px-6 py-4 text-right">Actions</th>
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -54,10 +55,27 @@
                 {{ user.role }}
               </span>
           </td>
+          <td class="px-6 py-4 text-right">
+            <button
+                @click="openUserDetails(user)"
+                class="text-sm text-brand-teal hover:text-brand-teal/80 font-semibold"
+            >
+              Details
+            </button>
+          </td>
         </tr>
         </tbody>
       </table>
     </div>
+
+    <AppModal :isOpen="isUserModalOpen" title="User Details" @close="closeUserModal">
+      <UserDetailsForm
+          v-if="selectedUser"
+          :user="selectedUser"
+          @change-password="handleChangePassword"
+          @delete-user="handleDeleteUser"
+      />
+    </AppModal>
   </div>
 </template>
 
@@ -67,9 +85,12 @@ import { useCrmStore } from '@/stores/crm';
 import AppModal from '@/components/ui/AppModal.vue';
 import AppInput from '@/components/ui/AppInput.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import UserDetailsForm from '@/components/admin/UserDetailsForm.vue';
 
 const crmStore = useCrmStore();
 const isModalOpen = ref(false);
+const isUserModalOpen = ref(false);
+const selectedUser = ref(null);
 
 const form = reactive({
   name: '',
@@ -81,6 +102,16 @@ const form = reactive({
 onMounted(() => {
   crmStore.fetchUsers();
 });
+
+const openUserDetails = (user) => {
+  selectedUser.value = user;
+  isUserModalOpen.value = true;
+};
+
+const closeUserModal = () => {
+  isUserModalOpen.value = false;
+  selectedUser.value = null;
+};
 
 const handleCreateUser = async () => {
   if (!form.username || !form.password) {
@@ -102,6 +133,31 @@ const handleCreateUser = async () => {
     form.role = 'Consultant';
   } catch (e) {
     alert('Failed to create user');
+  }
+};
+
+const handleDeleteUser = async (userId) => {
+  if (!confirm('Are you sure you want to delete this user?')) return;
+  try {
+    await crmStore.deleteUser(userId);
+    closeUserModal();
+    alert('User deleted.');
+  } catch (e) {
+    alert('Failed to delete user');
+  }
+};
+
+const handleChangePassword = async ({ userId, newPassword }) => {
+  if (!newPassword || newPassword.length < 6) {
+    alert('Password must be at least 6 characters');
+    return;
+  }
+
+  try {
+    await crmStore.changeUserPassword({ userId, newPassword });
+    alert('Password updated successfully.');
+  } catch (e) {
+    alert('Failed to update password');
   }
 };
 </script>

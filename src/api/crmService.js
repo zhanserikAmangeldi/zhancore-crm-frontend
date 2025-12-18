@@ -25,6 +25,16 @@ export const createUser = async (payload) => {
   return data;
 };
 
+export const changeUserPassword = async (payload) => {
+  const { data } = await api.post('/admin/users/change-password', payload);
+  return data;
+};
+
+export const deleteUser = async (userId) => {
+  const { data } = await api.delete(`/admin/users/${userId}`);
+  return data;
+};
+
 export const assignLeadOwner = async (payload) => {
   await api.post('/lead/assign-owner', payload);
 };

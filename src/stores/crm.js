@@ -10,6 +10,8 @@ import {
     getMyProjects,
     getUsers,
     createUser as createUserRequest,
+    changeUserPassword as changeUserPasswordRequest,
+    deleteUser as deleteUserRequest,
     qualifyLeadRequest,
     qualifyOpportunityRequest,
     updateLead,
@@ -75,6 +77,35 @@ export const useCrmStore = defineStore('crm', () => {
             return created;
         } catch (err) {
             error.value = 'Failed to create user';
+            console.error(err);
+            throw err;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    async function deleteUser(userId) {
+        isLoading.value = true;
+        try {
+            await deleteUserRequest(userId);
+            users.value = users.value.filter(user => user.id !== userId);
+            return true;
+        } catch (err) {
+            error.value = 'Failed to delete user';
+            console.error(err);
+            throw err;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    async function changeUserPassword(payload) {
+        isLoading.value = true;
+        try {
+            await changeUserPasswordRequest(payload);
+            return true;
+        } catch (err) {
+            error.value = 'Failed to change user password';
             console.error(err);
             throw err;
         } finally {
@@ -221,6 +252,8 @@ export const useCrmStore = defineStore('crm', () => {
         fetchClients,
         fetchUsers,
         createUser,
+        deleteUser,
+        changeUserPassword,
         assignLead,
         fetchMyLeads,
         addLeadDetails,
