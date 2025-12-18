@@ -22,7 +22,7 @@
           <th class="px-6 py-4">Details / Message</th>
           <th class="px-6 py-4">Status</th>
           <th class="px-6 py-4">Responsible</th>
-          <th class="px-6 py-4 text-right">Action</th>
+          <th class="px-9 py-4 text-right">Action</th>
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -44,19 +44,21 @@
             <span v-else class="text-gray-400">Не назначен</span>
           </td>
           <td class="px-6 py-4 text-right">
-            <button
-                v-if="lead.ownerName === 'Not Assigned'"
-                @click="openAssignModal(lead)"
-                class="text-sm text-white bg-brand-teal hover:bg-brand-teal/90 px-3 py-1.5 rounded-md transition-colors"
-            >
-              Assign
-            </button>
-            <button
-                v-else
-                class="text-sm text-gray-400 hover:text-brand-dark pl-3 py-1.5"
-            >
-              Details
-            </button>
+            <div class="flex items-center justify-end gap-2">
+              <button
+                  v-if="lead.ownerName === 'Not Assigned'"
+                  @click="openAssignModal(lead)"
+                  class="text-sm text-white bg-brand-teal hover:bg-brand-teal/90 px-3 py-1.5 rounded-md transition-colors"
+              >
+                Assign
+              </button>
+              <button
+                  @click="handleDeleteLead(lead.id)"
+                  class="text-sm text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition-colors"
+              >
+                Delete
+              </button>
+            </div>
           </td>
         </tr>
         </tbody>
@@ -146,5 +148,14 @@ const confirmAssign = () => {
 
   crmStore.assignLead(payload);
   isAssignModalOpen.value = false;
+};
+
+const handleDeleteLead = async (leadId) => {
+  if (!confirm('Are you sure you want to delete this lead?')) return;
+  try {
+    await crmStore.deleteLead(leadId);
+  } catch (e) {
+    alert('Failed to delete lead');
+  }
 };
 </script>

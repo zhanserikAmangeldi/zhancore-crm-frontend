@@ -35,6 +35,10 @@ export const deleteUser = async (userId) => {
   return data;
 };
 
+export const deleteClient = async (clientId) => {
+  await api.delete('/client/delete', { data: { id: clientId } });
+};
+
 export const assignLeadOwner = async (payload) => {
   await api.post('/lead/assign-owner', payload);
 };
@@ -55,6 +59,10 @@ export const updateLead = async (payload) => {
 
 export const qualifyLeadRequest = async (leadId) => {
   await api.post(`/lead/qualify/${leadId}`);
+};
+
+export const deleteLead = async (leadId) => {
+  await api.delete('/lead/delete', { data: { id: leadId } });
 };
 
 export const getMyOpportunities = async () => {
@@ -80,6 +88,10 @@ export const qualifyOpportunityRequest = async (payload) => {
   await api.post('/opportunity/qualify-to-project', payload);
 };
 
+export const deleteOpportunity = async (opportunityId) => {
+  await api.delete('/opportunity/delete', { data: { id: opportunityId } });
+};
+
 export const getMyProjects = async () => {
   const { data } = await api.get('/project/my-projects');
   return data;
@@ -97,4 +109,8 @@ export const getProjectById = async (projectId) => {
 
 export const updateProject = async (payload) => {
   await api.put('/project/update', payload);
+};
+
+export const deleteProject = async (projectId) => {
+  await api.delete('/project/delete', { data: { id: projectId } });
 };

@@ -22,6 +22,7 @@
           <th class="px-6 py-4">ID</th>
           <th class="px-6 py-4">Name / Company</th>
           <th class="px-6 py-4">Contacts</th>
+          <th class="px-9 py-4 text-right">Action</th>
         </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -37,6 +38,14 @@
               <span v-if="client.details !== ''">{{ client.details }}</span>
               <span v-else class="text-gray-400">Нет контактов</span>
             </div>
+          </td>
+          <td class="px-6 py-4 text-right">
+            <button
+              @click="handleDeleteClient(client.id)"
+              class="text-sm text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md transition-colors"
+            >
+              Delete
+            </button>
           </td>
         </tr>
         </tbody>
@@ -58,4 +67,13 @@ const crmStore = useCrmStore();
 onMounted(() => {
   crmStore.fetchClients();
 });
+
+const handleDeleteClient = async (clientId) => {
+  if (!confirm('Are you sure you want to delete this client?')) return;
+  try {
+    await crmStore.deleteClient(clientId);
+  } catch (e) {
+    alert('Failed to delete client');
+  }
+};
 </script>

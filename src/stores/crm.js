@@ -17,6 +17,10 @@ import {
     createUser as createUserRequest,
     changeUserPassword as changeUserPasswordRequest,
     deleteUser as deleteUserRequest,
+    deleteClient as deleteClientRequest,
+    deleteLead as deleteLeadRequest,
+    deleteOpportunity as deleteOpportunityRequest,
+    deleteProject as deleteProjectRequest,
     qualifyLeadRequest,
     qualifyOpportunityRequest,
     updateLead,
@@ -98,6 +102,21 @@ export const useCrmStore = defineStore('crm', () => {
             return true;
         } catch (err) {
             error.value = 'Failed to delete user';
+            console.error(err);
+            throw err;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    async function deleteClient(clientId) {
+        isLoading.value = true;
+        try {
+            await deleteClientRequest(clientId);
+            clients.value = clients.value.filter(client => client.id !== clientId);
+            return true;
+        } catch (err) {
+            error.value = 'Failed to delete client';
             console.error(err);
             throw err;
         } finally {
@@ -196,6 +215,21 @@ export const useCrmStore = defineStore('crm', () => {
         }
     }
 
+    async function deleteLead(leadId) {
+        isLoading.value = true;
+        try {
+            await deleteLeadRequest(leadId);
+            leads.value = leads.value.filter(lead => lead.id !== leadId);
+            return true;
+        } catch (err) {
+            error.value = 'Failed to delete lead';
+            console.error(err);
+            throw err;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
     async function fetchMyOpportunities() {
         isLoading.value = true;
         try {
@@ -262,6 +296,21 @@ export const useCrmStore = defineStore('crm', () => {
         }
     }
 
+    async function deleteOpportunity(opportunityId) {
+        isLoading.value = true;
+        try {
+            await deleteOpportunityRequest(opportunityId);
+            opportunities.value = opportunities.value.filter(opportunity => opportunity.id !== opportunityId);
+            return true;
+        } catch (err) {
+            error.value = 'Failed to delete opportunity';
+            console.error(err);
+            throw err;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
     async function fetchMyProjects() {
         isLoading.value = true;
         try {
@@ -312,6 +361,21 @@ export const useCrmStore = defineStore('crm', () => {
         }
     }
 
+    async function deleteProject(projectId) {
+        isLoading.value = true;
+        try {
+            await deleteProjectRequest(projectId);
+            projects.value = projects.value.filter(project => project.id !== projectId);
+            return true;
+        } catch (err) {
+            error.value = 'Failed to delete project';
+            console.error(err);
+            throw err;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
     return {
         consultants,
         leads,
@@ -328,19 +392,23 @@ export const useCrmStore = defineStore('crm', () => {
         createUser,
         deleteUser,
         changeUserPassword,
+        deleteClient,
         assignLead,
         fetchMyLeads,
         fetchLeadById,
         addLeadDetails,
         qualifyLead,
+        deleteLead,
         fetchMyOpportunities,
         fetchAllOpportunities,
         fetchOpportunityById,
         addOpportunityDetails,
         qualifyOpportunity,
+        deleteOpportunity,
         fetchMyProjects,
         fetchAllProjects,
         fetchProjectById,
-        updateProjectDetails
+        updateProjectDetails,
+        deleteProject
     }; 
 });
