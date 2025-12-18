@@ -89,6 +89,7 @@ import AppInput from '@/components/ui/AppInput.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import UserDetailsForm from '@/components/admin/UserDetailsForm.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { useConfirmAction } from '@/composables/useConfirmAction';
 
 export default {
   components: {
@@ -110,6 +111,8 @@ export default {
       password: '',
       role: 'Consultant'
     });
+
+    const { run: confirmAction } = useConfirmAction();
 
     onMounted(() => {
       crmStore.fetchUsers();
@@ -165,14 +168,15 @@ export default {
     };
 
     const handleDeleteUser = async (userId) => {
-      if (!confirm('Are you sure you want to delete this user?')) return;
-      try {
-        await crmStore.deleteUser(userId);
-        closeUserModal();
-        alert('User deleted.');
-      } catch (e) {
-        alert('Failed to delete user');
-      }
+      await confirmAction({
+        message: 'Are you sure you want to delete this user?',
+        action: async () => {
+          await crmStore.deleteUser(userId);
+          closeUserModal();
+          alert('User deleted.');
+        },
+        onError: () => alert('Failed to delete user')
+      });
     };
 
     const handleChangePassword = async ({ userId, newPassword }) => {

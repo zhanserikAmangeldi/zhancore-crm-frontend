@@ -61,6 +61,7 @@
 import { ref, onMounted, onUpdated, onUnmounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { useConfirmAction } from '@/composables/useConfirmAction';
 
 export default {
   components: {
@@ -69,6 +70,8 @@ export default {
   setup() {
     const crmStore = useCrmStore();
     const hasClearedError = ref(false);
+
+    const { run: confirmAction } = useConfirmAction();
 
     onMounted(() => {
       crmStore.fetchClients();
@@ -86,12 +89,11 @@ export default {
     });
 
     const handleDeleteClient = async (clientId) => {
-      if (!confirm('Are you sure you want to delete this client?')) return;
-      try {
-        await crmStore.deleteClient(clientId);
-      } catch (e) {
-        alert('Failed to delete client');
-      }
+      await confirmAction({
+        message: 'Are you sure you want to delete this client?',
+        action: () => crmStore.deleteClient(clientId),
+        onError: () => alert('Failed to delete client')
+      });
     };
 
     return {

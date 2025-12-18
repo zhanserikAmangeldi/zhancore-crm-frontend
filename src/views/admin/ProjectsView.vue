@@ -64,20 +64,21 @@
 import { onMounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { useConfirmAction } from '@/composables/useConfirmAction';
 
 const crmStore = useCrmStore();
+const { run: confirmAction } = useConfirmAction();
 
 onMounted(() => {
   crmStore.fetchAllProjects();
 });
 
 const handleDeleteProject = async (projectId) => {
-  if (!confirm('Are you sure you want to delete this project?')) return;
-  try {
-    await crmStore.deleteProject(projectId);
-  } catch (e) {
-    alert('Failed to delete project');
-  }
+  await confirmAction({
+    message: 'Are you sure you want to delete this project?',
+    action: () => crmStore.deleteProject(projectId),
+    onError: () => alert('Failed to delete project')
+  });
 };
 
 const getStatusColor = (status) => {

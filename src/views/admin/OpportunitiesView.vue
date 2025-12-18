@@ -56,19 +56,20 @@ import { onMounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
+import { useConfirmAction } from '@/composables/useConfirmAction';
 
 const crmStore = useCrmStore();
+const { run: confirmAction } = useConfirmAction();
 
 onMounted(() => {
   crmStore.fetchAllOpportunities();
 });
 
 const handleDeleteOpportunity = async (opportunityId) => {
-  if (!confirm('Are you sure you want to delete this opportunity?')) return;
-  try {
-    await crmStore.deleteOpportunity(opportunityId);
-  } catch (e) {
-    alert('Failed to delete opportunity');
-  }
+  await confirmAction({
+    message: 'Are you sure you want to delete this opportunity?',
+    action: () => crmStore.deleteOpportunity(opportunityId),
+    onError: () => alert('Failed to delete opportunity')
+  });
 };
 </script>

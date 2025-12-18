@@ -115,6 +115,7 @@ import { useCrmStore } from '@/stores/crm';
 import AppModal from '@/components/ui/AppModal.vue';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { useConfirmAction } from '@/composables/useConfirmAction';
 
 export default {
   components: {
@@ -127,6 +128,8 @@ export default {
     const isAssignModalOpen = ref(false);
     const selectedLead = ref(null);
     const selectedConsultantId = ref(null);
+
+    const { run: confirmAction } = useConfirmAction();
 
     onMounted(async () => {
       await Promise.all([
@@ -171,12 +174,11 @@ export default {
     };
 
     const handleDeleteLead = async (leadId) => {
-      if (!confirm('Are you sure you want to delete this lead?')) return;
-      try {
-        await crmStore.deleteLead(leadId);
-      } catch (e) {
-        alert('Failed to delete lead');
-      }
+      await confirmAction({
+        message: 'Are you sure you want to delete this lead?',
+        action: () => crmStore.deleteLead(leadId),
+        onError: () => alert('Failed to delete lead')
+      });
     };
 
     return {
