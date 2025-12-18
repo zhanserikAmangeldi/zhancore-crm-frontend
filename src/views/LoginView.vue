@@ -6,8 +6,7 @@
 
     <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl z-10 border border-gray-100">
       <div class="flex flex-col items-center mb-8">
-        <AppLogo class-name="w-24 h-24 mb-4" />
-        <h1 class="text-2xl font-bold text-brand-dark">Zhancore CRM</h1>
+        <AppLogo class-name="w-64 h-48 mb-4" />
         <p class="text-gray-500 text-sm mt-1"></p>
       </div>
 
