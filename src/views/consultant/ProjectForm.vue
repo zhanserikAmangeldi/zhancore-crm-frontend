@@ -31,6 +31,20 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <form @submit.prevent="handleSubmit" class="space-y-6">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-brand-dark/80">Opportunity</label>
+          <div class="px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-brand-dark">
+            <router-link
+              v-if="project?.opportunityId"
+              :to="`/consultant/opportunities/${project.opportunityId}`"
+              class="text-sm font-medium text-brand-teal hover:text-brand-dark"
+            >
+              {{ project.opportunityId }}
+            </router-link>
+            <span v-else class="text-sm text-gray-500">Not linked</span>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <AppInput
             v-model="form.name"

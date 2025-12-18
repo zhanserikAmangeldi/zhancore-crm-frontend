@@ -35,6 +35,21 @@
           <h2 class="text-sm font-bold text-brand-indigo uppercase tracking-wider border-b border-gray-100 pb-2">
             Opportunity Details
           </h2>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-medium text-brand-dark/80">Lead</label>
+            <div
+              class="px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-brand-dark"
+            >
+              <router-link
+                v-if="opportunity?.leadId"
+                :to="`/consultant/leads/${opportunity.leadId}`"
+                class="text-sm font-medium text-brand-teal hover:text-brand-dark"
+              >
+                {{ opportunity.leadId }}
+              </router-link>
+              <span v-else class="text-sm text-gray-500">Not linked</span>
+            </div>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <AppInput
               v-model="form.name"
