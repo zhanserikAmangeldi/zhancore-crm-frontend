@@ -81,8 +81,8 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, onMounted } from 'vue';
+<script>
+import { ref, reactive, onMounted, onUpdated, onUnmounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import AppModal from '@/components/ui/AppModal.vue';
 import AppInput from '@/components/ui/AppInput.vue';
@@ -90,77 +90,117 @@ import AppButton from '@/components/ui/AppButton.vue';
 import UserDetailsForm from '@/components/admin/UserDetailsForm.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
 
-const crmStore = useCrmStore();
-const isModalOpen = ref(false);
-const isUserModalOpen = ref(false);
-const selectedUser = ref(null);
+export default {
+  components: {
+    AppModal,
+    AppInput,
+    AppButton,
+    UserDetailsForm,
+    AppSpinner
+  },
+  setup() {
+    const crmStore = useCrmStore();
+    const isModalOpen = ref(false);
+    const isUserModalOpen = ref(false);
+    const selectedUser = ref(null);
 
-const form = reactive({
-  name: '',
-  username: '',
-  password: '',
-  role: 'Consultant'
-});
+    const form = reactive({
+      name: '',
+      username: '',
+      password: '',
+      role: 'Consultant'
+    });
 
-onMounted(() => {
-  crmStore.fetchUsers();
-});
+    onMounted(() => {
+      crmStore.fetchUsers();
+    });
 
-const openUserDetails = (user) => {
-  selectedUser.value = user;
-  isUserModalOpen.value = true;
-};
+    onUpdated(() => {
+      if (
+        selectedUser.value &&
+        !crmStore.users.find(user => user.id === selectedUser.value.id)
+      ) {
+        isUserModalOpen.value = false;
+        selectedUser.value = null;
+      }
+    });
 
-const closeUserModal = () => {
-  isUserModalOpen.value = false;
-  selectedUser.value = null;
-};
+    onUnmounted(() => {
+      isUserModalOpen.value = false;
+      selectedUser.value = null;
+      isModalOpen.value = false;
+    });
 
-const handleCreateUser = async () => {
-  if (!form.username || !form.password) {
-    alert('Please fill username and password');
-    return;
-  }
-  if (form.password.length < 6) {
-    alert('Password must be at least 6 characters');
-    return;
-  }
+    const openUserDetails = (user) => {
+      selectedUser.value = user;
+      isUserModalOpen.value = true;
+    };
 
-  try {
-    await crmStore.createUser({ username: form.username, password: form.password, roleName: form.role });
-    isModalOpen.value = false;
+    const closeUserModal = () => {
+      isUserModalOpen.value = false;
+      selectedUser.value = null;
+    };
 
-    form.name = '';
-    form.username = '';
-    form.password = '';
-    form.role = 'Consultant';
-  } catch (e) {
-    alert('Failed to create user');
-  }
-};
+    const handleCreateUser = async () => {
+      if (!form.username || !form.password) {
+        alert('Please fill username and password');
+        return;
+      }
+      if (form.password.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+      }
 
-const handleDeleteUser = async (userId) => {
-  if (!confirm('Are you sure you want to delete this user?')) return;
-  try {
-    await crmStore.deleteUser(userId);
-    closeUserModal();
-    alert('User deleted.');
-  } catch (e) {
-    alert('Failed to delete user');
-  }
-};
+      try {
+        await crmStore.createUser({ username: form.username, password: form.password, roleName: form.role });
+        isModalOpen.value = false;
 
-const handleChangePassword = async ({ userId, newPassword }) => {
-  if (!newPassword || newPassword.length < 6) {
-    alert('Password must be at least 6 characters');
-    return;
-  }
+        form.name = '';
+        form.username = '';
+        form.password = '';
+        form.role = 'Consultant';
+      } catch (e) {
+        alert('Failed to create user');
+      }
+    };
 
-  try {
-    await crmStore.changeUserPassword({ userId, newPassword });
-    alert('Password updated successfully.');
-  } catch (e) {
-    alert('Failed to update password');
+    const handleDeleteUser = async (userId) => {
+      if (!confirm('Are you sure you want to delete this user?')) return;
+      try {
+        await crmStore.deleteUser(userId);
+        closeUserModal();
+        alert('User deleted.');
+      } catch (e) {
+        alert('Failed to delete user');
+      }
+    };
+
+    const handleChangePassword = async ({ userId, newPassword }) => {
+      if (!newPassword || newPassword.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+      }
+
+      try {
+        await crmStore.changeUserPassword({ userId, newPassword });
+        alert('Password updated successfully.');
+      } catch (e) {
+        alert('Failed to update password');
+      }
+    };
+
+    return {
+      crmStore,
+      isModalOpen,
+      isUserModalOpen,
+      selectedUser,
+      form,
+      openUserDetails,
+      closeUserModal,
+      handleCreateUser,
+      handleDeleteUser,
+      handleChangePassword
+    };
   }
 };
 </script>

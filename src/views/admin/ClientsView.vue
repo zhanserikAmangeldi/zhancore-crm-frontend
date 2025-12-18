@@ -57,23 +57,47 @@
   </div>
 </template>
 
-<script setup>
-import { onMounted } from 'vue';
+<script>
+import { ref, onMounted, onUpdated, onUnmounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
 
-const crmStore = useCrmStore();
+export default {
+  components: {
+    AppSpinner
+  },
+  setup() {
+    const crmStore = useCrmStore();
+    const hasClearedError = ref(false);
 
-onMounted(() => {
-  crmStore.fetchClients();
-});
+    onMounted(() => {
+      crmStore.fetchClients();
+    });
 
-const handleDeleteClient = async (clientId) => {
-  if (!confirm('Are you sure you want to delete this client?')) return;
-  try {
-    await crmStore.deleteClient(clientId);
-  } catch (e) {
-    alert('Failed to delete client');
+    onUpdated(() => {
+      if (!hasClearedError.value && crmStore.clients.length > 0 && crmStore.error) {
+        crmStore.error = null;
+        hasClearedError.value = true;
+      }
+    });
+
+    onUnmounted(() => {
+      crmStore.error = null;
+    });
+
+    const handleDeleteClient = async (clientId) => {
+      if (!confirm('Are you sure you want to delete this client?')) return;
+      try {
+        await crmStore.deleteClient(clientId);
+      } catch (e) {
+        alert('Failed to delete client');
+      }
+    };
+
+    return {
+      crmStore,
+      handleDeleteClient
+    };
   }
 };
 </script>

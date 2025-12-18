@@ -109,53 +109,85 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
+<script>
+import { ref, onMounted, onUpdated, onUnmounted } from 'vue';
 import { useCrmStore } from '@/stores/crm';
 import AppModal from '@/components/ui/AppModal.vue';
 import StatusBadge from '@/components/ui/StatusBadge.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
 
-const crmStore = useCrmStore();
+export default {
+  components: {
+    AppModal,
+    StatusBadge,
+    AppSpinner
+  },
+  setup() {
+    const crmStore = useCrmStore();
+    const isAssignModalOpen = ref(false);
+    const selectedLead = ref(null);
+    const selectedConsultantId = ref(null);
 
-onMounted(async () => {
-  await Promise.all([
-    crmStore.fetchLeads(),
-    crmStore.fetchConsultants()
-  ]);
-});
+    onMounted(async () => {
+      await Promise.all([
+        crmStore.fetchLeads(),
+        crmStore.fetchConsultants()
+      ]);
+    });
 
-const isAssignModalOpen = ref(false);
-const selectedLead = ref(null);
-const selectedConsultantId = ref(null);
+    onUpdated(() => {
+      if (
+        selectedLead.value &&
+        !crmStore.leads.find(lead => lead.id === selectedLead.value.id)
+      ) {
+        isAssignModalOpen.value = false;
+        selectedLead.value = null;
+        selectedConsultantId.value = null;
+      }
+    });
 
-const openAssignModal = (lead) => {
-  selectedLead.value = lead;
-  selectedConsultantId.value = null;
-  isAssignModalOpen.value = true;
-};
+    onUnmounted(() => {
+      isAssignModalOpen.value = false;
+      selectedLead.value = null;
+      selectedConsultantId.value = null;
+    });
 
-const confirmAssign = () => {
-  if (!selectedLead.value || !selectedConsultantId.value) return;
+    const openAssignModal = (lead) => {
+      selectedLead.value = lead;
+      selectedConsultantId.value = null;
+      isAssignModalOpen.value = true;
+    };
 
-  console.log(selectedLead.value);
-  console.log(selectedConsultantId.value);
+    const confirmAssign = () => {
+      if (!selectedLead.value || !selectedConsultantId.value) return;
 
-  const payload = {
-    entityId: selectedLead.value.id,
-    newOwnerId: selectedConsultantId.value
-  };
+      const payload = {
+        entityId: selectedLead.value.id,
+        newOwnerId: selectedConsultantId.value
+      };
 
-  crmStore.assignLead(payload);
-  isAssignModalOpen.value = false;
-};
+      crmStore.assignLead(payload);
+      isAssignModalOpen.value = false;
+    };
 
-const handleDeleteLead = async (leadId) => {
-  if (!confirm('Are you sure you want to delete this lead?')) return;
-  try {
-    await crmStore.deleteLead(leadId);
-  } catch (e) {
-    alert('Failed to delete lead');
+    const handleDeleteLead = async (leadId) => {
+      if (!confirm('Are you sure you want to delete this lead?')) return;
+      try {
+        await crmStore.deleteLead(leadId);
+      } catch (e) {
+        alert('Failed to delete lead');
+      }
+    };
+
+    return {
+      crmStore,
+      isAssignModalOpen,
+      selectedLead,
+      selectedConsultantId,
+      openAssignModal,
+      confirmAssign,
+      handleDeleteLead
+    };
   }
 };
 </script>
