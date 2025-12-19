@@ -59,19 +59,28 @@ export const createActions = (state) => {
   };
 
   const fetchClients = async () => {
-    try {
+      isLoading.value = true;
+
+      try {
       clients.value = await getClients();
     } catch (err) {
       console.error('Failed to load consultants', err);
-    }
+    } finally {
+          isLoading.value = false;
+      }
   };
 
   const fetchUsers = async () => {
-    try {
+      isLoading.value = true;
+
+      try {
       users.value = await getUsers();
     } catch (err) {
       console.error('Failed to load users', err);
-    }
+    } finally {
+          isLoading.value = false;
+
+      }
   };
 
   const createUser = async (payload) => {
