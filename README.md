@@ -7,6 +7,12 @@ Frontend for Zhancore CRM built with Vue 3 and Vite. It includes admin and consu
 - Node.js: see `package.json` engines
 - npm
 
+## Admin User credentials
+```
+login: admin
+password: admin123
+```
+
 ## Getting started
 
 ```sh
